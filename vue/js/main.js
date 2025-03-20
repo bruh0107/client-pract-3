@@ -3,14 +3,25 @@ Vue.component('kanban-column', {
         <div class="board-column">
             <h2 class="column-title">{{ column.title }}</h2>
             <div class="task-wrapper">
-                <div class="task-card"></div>
-                <button>Создать задачу</button>
-                <div>
-                    <input placeholder="Заголовок задачи">
-                    <textarea placeholder="Описание задачи"></textarea>
-                    <input type="date">
-                    <button>Создать</button>
-                    <button>Отмена</button>
+                <task-card
+                    v-for="(task, taskIndex) in column.tasks"
+                    :key="task.id"
+                    :task="task"
+                    :column-index="columnIndex"
+                    @move-task="moveTask"
+                    @edit-task="editTask"
+                    @delete-task="deleteTask"
+                ></task-card>
+                <button
+                    v-if="columnIndex === 0"
+                    @click="showForm = true"
+                >Создать задачу</button>
+                <div v-if="showForm" class="task-form">
+                    <input v-model="newTask.title" placeholder="Заголовок задачи">
+                    <textarea v-model="newTask.description" placeholder="Описание задачи"></textarea>
+                    <input type="date" v-model="newTask.deadline">
+                    <button @click="createTask">Создать</button>
+                    <button @click="showForm = false">Отмена</button>
                 </div>
             </div>
         </div>
@@ -18,7 +29,7 @@ Vue.component('kanban-column', {
     props: ['column', 'columnIndex'],
     data() {
         return {
-            snowForm: false,
+            showForm: false,
             newTask: {
                 title: '',
                 description: '',
@@ -58,15 +69,17 @@ Vue.component('kanban-column', {
 Vue.component('task-card', {
     template: `
         <div class="task">
-            <p class="task-title">{{ task.title }}</p>
-            <p class="task-description">{{ task.description }}</p>
-            <p class="task-deadline">Дэдлайн: {{ formattedDate(task.deadline) }}</p>
-            <p class="task-created">Создана: {{ formattedDate(task.created) }}</p>
-            <p class="task-updated">Последнее обновление{{ formattedDate(task.updatedAt) }}</p>
-            <button @click="editTask">Редактировать</button>
-            <button @click="deleteTask">Удалить</button>
-            <button v-if="columnIndex !== 3" @click="moveTask(columnIndex + 1)">Переместить вперед</button>
-            <button v-if="columnIndex === 2" @click="moveTask(1)">Вернуть в работу</button>
+            <div>
+                <p class="task-title">{{ task.title }}</p>
+                <p class="task-description">{{ task.description }}</p>
+                <p class="task-deadline">Дэдлайн: {{ formattedDate(task.deadline) }}</p>
+                <p class="task-created">Создана: {{ formattedDate(task.created) }}</p>
+                <p class="task-updated">Последнее обновление{{ formattedDate(task.updatedAt) }}</p>
+                <button @click="editTask">Редактировать</button>
+                <button @click="deleteTask">Удалить</button>
+                <button v-if="columnIndex !== 3" @click="moveTask(columnIndex + 1)">Переместить вперед</button>
+                <button v-if="columnIndex === 2" @click="moveTask(1)">Вернуть в работу</button>
+            </div>
         </div>
     `,
     props: ['task', 'columnIndex'],

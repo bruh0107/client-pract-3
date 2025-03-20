@@ -15,7 +15,15 @@
     <div class="container">
         <h1 class="title">Задачи.ру</h1>
         <section class="board">
-
+            <kanban-column
+                    v-for="(column, index) in columns"
+                    :key="index"
+                    :column="column"
+                    :column-index="index"
+                    @move-task="moveTask"
+                    @edit-task="editTask"
+                    @delete-task="deleteTask"
+            ></kanban-column>
         </section>
     </div>
 </div>
