@@ -137,3 +137,10 @@ body {
     flex-direction: column;
     gap: 5px;
 }
+.task.overdue {
+    border: 2px solid #7c2929;
+}
+
+.task.completed {
+    border: 2px solid green;
+}

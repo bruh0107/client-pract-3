@@ -47,7 +47,8 @@ Vue.component('kanban-column', {
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 status: 'planned',
-                isOverdue: false
+                isOverdue: false,
+                returnReason: null
             }
             this.$emit('move-task', task, this.columnIndex)
             this.showForm = false
@@ -68,14 +69,15 @@ Vue.component('kanban-column', {
 
 Vue.component('task-card', {
     template: `
-        <div class="task">
+        <div class="task" :class="{ 'overdue': isOverdue(task.deadline) && columnIndex === 3, 'completed': !isOverdue(task.deadline) && columnIndex === 3 }">
             <div v-if="!isEditing && !isReturningToWork">
                 <p class="task-title">{{ task.title }}</p>
                 <p class="task-description">{{ task.description }}</p>
                 <p class="task-deadline">Дэдлайн: {{ formattedDate(task.deadline) }}</p>
                 <p class="task-created">Создана: {{ formattedDate(task.createdAt) }}</p>
                 <p class="task-updated">Последнее обновление: {{ formattedDate(task.updatedAt) }}</p>
-                <button @click="startEditing">Редактировать</button>
+                <p v-if="task.returnReason" class="task-return-reason">Причина возврата: {{ task.returnReason }}</p>
+                <button @click="startEditing" v-if="columnIndex !== 3">Редактировать</button>
                 <button @click="deleteTask">Удалить</button>
                 <button v-if="columnIndex !== 3" @click="moveTask(columnIndex + 1)">Переместить вперед</button>
                 <button v-if="columnIndex === 2" @click="startReturningToWork">Вернуть в работу</button>
@@ -149,7 +151,10 @@ Vue.component('task-card', {
         },
         moveTask(newColumnIndex) {
             this.$emit('move-task', this.task, newColumnIndex)
-        }
+        },
+        isOverdue(deadline) {
+            return deadline && new Date(deadline) < new Date();
+        },
     }
 })
 
@@ -179,23 +184,22 @@ let app = new Vue({
     },
     methods: {
         moveTask(task, newColumnIndex, returnReason) {
-            const currentColumnIndex = this.columns.findIndex(column => column.tasks.includes(task))
+            const currentColumnIndex = this.columns.findIndex(column => column.tasks.includes(task));
             if (currentColumnIndex !== -1) {
-                this.columns[currentColumnIndex].tasks = this.columns[currentColumnIndex].tasks.filter(t => t.id !== task.id)
+                this.columns[currentColumnIndex].tasks = this.columns[currentColumnIndex].tasks.filter(t => t.id !== task.id);
             }
-            task.status = ['planned', 'in-progress', 'testing', 'completed'][newColumnIndex]
-            task.updatedAt = new Date()
+            task.status = ['planned', 'in-progress', 'testing', 'completed'][newColumnIndex];
+            task.updatedAt = new Date();
 
             if (newColumnIndex === 3) {
-                task.isOverdue = task.deadline && new Date(task.deadline) < new Date()
+                task.isOverdue = task.deadline && new Date(task.deadline) < new Date();
             }
 
-            // Добавляем причину возврата, если она есть
             if (returnReason) {
-                task.returnReason = returnReason
+                task.returnReason = returnReason;
             }
 
-            this.columns[newColumnIndex].tasks.push(task)
+            this.columns[newColumnIndex].tasks.push(task);
         },
         editTask(updatedTask, columnIndex) {
             this.columns[columnIndex].tasks =
