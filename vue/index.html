@@ -8,53 +8,14 @@
     <script defer src="js/vue.min.js"></script>
     <script defer src="js/main.js"></script>
     <link rel="stylesheet" href="css/main.css">
-    <title>Заметки.ру</title>
+    <title>Задачи.ру</title>
 </head>
 <body>
 <div id="app">
     <div class="container">
-        <h1 class="title">Заметки.ру</h1>
+        <h1 class="title">Задачи.ру</h1>
         <section class="board">
-            <div class="board-column" v-for="(column, i) in queuedColumns" :key="i">
-                <h2 class="column-title">{{ column.title }}</h2>
-                <div class="task-wrapper">
-                    <article class="task" v-for="(task, j) in column.tasks" :key="`${i} - ${task.id}`">
-                        <p class="task-title">{{ task.title }}</p>
-                        <div class="task-body">
-                            <label class="task-point" v-for="(subtask, k) in task.subtasks" :key="`${i} - ${task.id} - ${k}`">
-                                <input
-                                        type="checkbox"
-                                        :id="`${i} - ${j} - ${k}`"
-                                        v-model="subtask.completed"
-                                        @change="onCompleteSubtask(task)"
-                                        :disabled="columnDisabled(i) || subtask.completed"
-                                >
-                                {{ subtask.title }}
-                            </label>
-                        </div>
-                        <p v-if="!!task.finishedAt">Выполнена в: {{ formattedDate(task.finishedAt) }}</p>
-                        <button
-                                class="task__btn"
-                                v-if="i === 2 && !task.needsRework"
-                                @click="reworkTask(task)"
-                        >
-                            Доработать
-                        </button>
-                        <button
-                                class="task__btn"
-                                v-if="i === 3"
-                                @click="completeRework(task)"
-                        >
-                            Завершить доработку
-                        </button>
-                    </article>
-                    <create-task
-                            :unique-id="uniqueId"
-                            v-if="i === 0 && column.tasks.length < 3 && queuedColumns[1].tasks.length < 5"
-                            @create-task="(task) => tasks.push(task)"
-                    ></create-task>
-                </div>
-            </div>
+
         </section>
     </div>
 </div>
