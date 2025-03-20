@@ -60,11 +60,30 @@ Vue.component('task-card', {
         <div class="task">
             <p class="task-title">{{ task.title }}</p>
             <p class="task-description">{{ task.description }}</p>
-            <p class="task-deadline">Дэдлайн: {{ task.deadline }}</p>
-            <p class="task-created">Создана: {{ task.created }}</p>
-            <p class="task-updated">Последнее обновлоение{{ task.updated }}</p>
+            <p class="task-deadline">Дэдлайн: {{ formattedDate(task.deadline) }}</p>
+            <p class="task-created">Создана: {{ formattedDate(task.created) }}</p>
+            <p class="task-updated">Последнее обновление{{ formattedDate(task.updatedAt) }}</p>
+            <button @click="editTask">Редактировать</button>
+            <button @click="deleteTask">Удалить</button>
+            <button v-if="columnIndex !== 3" @click="moveTask(columnIndex + 1)">Переместить вперед</button>
+            <button v-if="columnIndex === 2" @click="moveTask(1)">Вернуть в работу</button>
         </div>
-    `
+    `,
+    props: ['task', 'columnIndex'],
+    methods: {
+        formattedDate(date) {
+            return date ? new Intl.DateTimeFormat('ru-RU').format(new Date(date)) : ''
+        },
+        editTask() {
+            this.$emit('edit-task', this.task)
+        },
+        deleteTask() {
+            this.$emit('delete-task', this.task)
+        },
+        moveTask(newColumnIndex) {
+            this.$emit('move-task', this.task, newColumnIndex)
+        }
+    }
 })
 
 let app = new Vue ({
