@@ -1,0 +1,139 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Roboto Thin", sans-serif;
+    color: #3a3a3a;
+}
+
+.container{
+    max-width: 1540px;
+    margin: 0 auto;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.title {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.board-column {
+    border: 2px solid #98bcd1;
+    border-radius: 5px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 500px;
+    justify-content: space-between;
+}
+
+.task-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.task{
+    border: 2px solid #698c9f;
+    padding: 10px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.task-title {
+    font-size: 20px;
+}
+
+.task-body {
+    display: flex;
+    flex-direction: column;
+    padding-left: 5px;
+}
+
+.add-task {
+    font-size: 16px;
+    font-family: "Roboto Thin", sans-serif;
+    padding: 6px 12px;
+    width: fit-content;
+    background: #ffe3d4;
+    border: 2px solid #d1ac98;
+    border-radius: 5px;
+    color: #3a3a3a;
+    cursor: pointer;
+    transition: 0.1s;
+}
+
+.add-task:hover {
+    background: #ffceb4;
+    border: 2px solid #ffe4d5;
+}
+
+.add-task:disabled {
+    background: #d6d6d6;
+    border: 2px solid #bababa;
+}
+
+.task-form__input {
+    padding: 4px 12px;
+    border: 2px solid #698c9f;
+    border-radius: 5px;
+}
+
+.task-name {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.task-form__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.task-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+}
+
+.create-task__form {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.task__btn {
+    font-family: "Roboto Thin", sans-serif;
+    padding: 4px 12px;
+    width: fit-content;
+    background: #ffe3d4;
+    border: 2px solid #d1ac98;
+    border-radius: 5px;
+    color: #3a3a3a;
+    cursor: pointer;
+    transition: 0.1s;
+}
+
+.task__btn:disabled {
+    background: #e3e3e3;
+    border: 2px solid #9f9f9f;
+}
+
+.create-task {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
