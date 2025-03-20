@@ -118,13 +118,13 @@ body {
 .task__btn {
     font-family: "Roboto Thin", sans-serif;
     padding: 4px 12px;
-    width: fit-content;
     background: #ffe3d4;
     border: 2px solid #d1ac98;
     border-radius: 5px;
     color: #3a3a3a;
     cursor: pointer;
     transition: 0.1s;
+    width: 100%;
 }
 
 .task__btn:disabled {
@@ -143,4 +143,22 @@ body {
 
 .task.completed {
     border: 2px solid green;
+}
+
+.btns-wrapper{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5px;
+}
+
+.edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.return-form {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
 }

@@ -13,15 +13,18 @@ Vue.component('kanban-column', {
                     @delete-task="deleteTask"
                 ></task-card>
                 <button
+                    class="task__btn"
                     v-if="columnIndex === 0"
                     @click="showForm = true"
                 >Создать задачу</button>
                 <div v-if="showForm" class="task-form">
-                    <input v-model="newTask.title" placeholder="Заголовок задачи">
-                    <textarea v-model="newTask.description" placeholder="Описание задачи"></textarea>
-                    <input type="date" v-model="newTask.deadline">
-                    <button @click="createTask">Создать</button>
-                    <button @click="showForm = false">Отмена</button>
+                    <input class="task-form__input" v-model="newTask.title" placeholder="Заголовок задачи">
+                    <textarea class="task-form__input" v-model="newTask.description" placeholder="Описание задачи"></textarea>
+                    <input class="task-form__input" type="date" v-model="newTask.deadline">
+                    <div class="btns-wrapper">
+                        <button class="task__btn" @click="createTask">Создать</button>
+                        <button class="task__btn" @click="showForm = false">Отмена</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -77,22 +80,26 @@ Vue.component('task-card', {
                 <p class="task-created">Создана: {{ formattedDate(task.createdAt) }}</p>
                 <p class="task-updated">Последнее обновление: {{ formattedDate(task.updatedAt) }}</p>
                 <p v-if="task.returnReason" class="task-return-reason">Причина возврата: {{ task.returnReason }}</p>
-                <button @click="startEditing" v-if="columnIndex !== 3">Редактировать</button>
-                <button @click="deleteTask">Удалить</button>
-                <button v-if="columnIndex !== 3" @click="moveTask(columnIndex + 1)">Переместить вперед</button>
-                <button v-if="columnIndex === 2" @click="startReturningToWork">Вернуть в работу</button>
+                <div class="btns-wrapper">
+                    <button class="task__btn" @click="startEditing" v-if="columnIndex !== 3">Редактировать</button>
+                    <button class="task__btn" @click="deleteTask">Удалить</button>
+                    <button class="task__btn" v-if="columnIndex !== 3" @click="moveTask(columnIndex + 1)">Переместить вперед</button>
+                    <button class="task__btn" v-if="columnIndex === 2" @click="startReturningToWork">Вернуть в работу</button>
+                </div>
             </div>
             <div v-else-if="isEditing" class="edit-form">
-                <input v-model="editedTask.title" placeholder="Заголовок задачи">
-                <textarea v-model="editedTask.description" placeholder="Описание задачи"></textarea>
-                <input type="date" v-model="editedTask.deadline">
-                <button @click="saveEditing">Сохранить</button>
-                <button @click="cancelEditing">Отмена</button>
+                <div class="edit-form">
+                    <input class="task-form__input" v-model="editedTask.title" placeholder="Заголовок задачи">
+                    <textarea class="task-form__input" v-model="editedTask.description" placeholder="Описание задачи"></textarea>
+                </div>
+                <input class="task-form__input" type="date" v-model="editedTask.deadline">
+                <button class="task__btn" @click="saveEditing">Сохранить</button>
+                <button class="task__btn" @click="cancelEditing">Отмена</button>
             </div>
             <div v-else-if="isReturningToWork" class="return-form">
-                <textarea v-model="returnReason" placeholder="Причина возврата в работу"></textarea>
-                <button @click="confirmReturnToWork">Подтвердить</button>
-                <button @click="cancelReturnToWork">Отмена</button>
+                <textarea class="task-form__input" v-model="returnReason" placeholder="Причина возврата в работу"></textarea>
+                <button class="task__btn" @click="confirmReturnToWork">Подтвердить</button>
+                <button class="task__btn" @click="cancelReturnToWork">Отмена</button>
             </div>
         </div>
     `,
