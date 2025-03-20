@@ -21,7 +21,7 @@
                     :column="column"
                     :column-index="index"
                     @move-task="moveTask"
-                    @edit-task="editTask"
+                    @edit-task="(task) => editTask(task, index)"
                     @delete-task="deleteTask"
             ></kanban-column>
         </section>
