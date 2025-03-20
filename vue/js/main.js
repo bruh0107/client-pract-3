@@ -26,6 +26,45 @@ Vue.component('kanban-column', {
             }
         }
     },
+    methods: {
+        createTask() {
+            const task = {
+                id: Date.now(),
+                title: this.newTask.title,
+                description: this.newTask.description,
+                deadline: this.newTask.deadline,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                status: 'planned',
+                isOverdue: false
+            }
+            this.$emit('move-task', task, this.columnIndex)
+            this.showForm = false
+            this.newTask = { title: '', description: '', deadline: null }
+        },
+
+        moveTask(task, newColumnIndex) {
+            this.$emit('move-task', task, newColumnIndex)
+        },
+        editTask(task) {
+            this.$emit('edit-task', task)
+        },
+        deleteTask(task) {
+            this.$emit('delete-task', task)
+        }
+    }
+})
+
+Vue.component('task-card', {
+    template: `
+        <div class="task">
+            <p class="task-title">{{ task.title }}</p>
+            <p class="task-description">{{ task.description }}</p>
+            <p class="task-deadline">Дэдлайн: {{ task.deadline }}</p>
+            <p class="task-created">Создана: {{ task.created }}</p>
+            <p class="task-updated">Последнее обновлоение{{ task.updated }}</p>
+        </div>
+    `
 })
 
 let app = new Vue ({
