@@ -55,8 +55,8 @@ Vue.component('kanban-column', {
             this.newTask = { title: '', description: '', deadline: null }
         },
 
-        moveTask(task, newColumnIndex) {
-            this.$emit('move-task', task, newColumnIndex)
+        moveTask(task, newColumnIndex, returnReason) {
+            this.$emit('move-task', task, newColumnIndex, returnReason)
         },
         editTask(task) {
             this.$emit('edit-task', task)
