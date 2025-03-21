@@ -72,7 +72,11 @@ Vue.component('kanban-column', {
 
 Vue.component('task-card', {
     template: `
-        <div class="task" :class="{ 'overdue': isOverdue(task.deadline) && columnIndex === 3, 'completed': !isOverdue(task.deadline) && columnIndex === 3 }">
+        <div class="task" :class="{ 
+            'urgent': isUrgent, 
+            'overdue': isOverdue(task.deadline) && columnIndex !== 3, 
+            'completed': !isOverdue(task.deadline) && columnIndex === 3 }"
+            >
             <div v-if="!isEditing && !isReturningToWork">
                 <p class="task-title">{{ task.title }}</p>
                 <p class="task-description">{{ task.description }}</p>
@@ -114,6 +118,21 @@ Vue.component('task-card', {
                 description: this.task.description,
                 deadline: this.task.deadline
             }
+        }
+    },
+    computed: {
+        isUrgent() {
+            if (!this.task.deadline) return false;
+            const deadlineDate = new Date(this.task.deadline);
+            const now = new Date();
+            const timeDiff = deadlineDate - now;
+            const daysDiff = timeDiff / (1000 * 60 * 60 * 24);
+            return daysDiff <= 2 && daysDiff > 0;
+        },
+        isOverdue() {
+            return (deadline) => {
+                return deadline && new Date(deadline) < new Date();
+            };
         }
     },
     methods: {
@@ -158,9 +177,6 @@ Vue.component('task-card', {
         },
         moveTask(newColumnIndex) {
             this.$emit('move-task', this.task, newColumnIndex)
-        },
-        isOverdue(deadline) {
-            return deadline && new Date(deadline) < new Date();
         },
     }
 })
@@ -228,20 +244,3 @@ let app = new Vue({
         }
     }
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
