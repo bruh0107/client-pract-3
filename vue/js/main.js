@@ -1,6 +1,6 @@
 Vue.component('kanban-column', {
     template: `
-        <div class="board-column">
+        <div class="board-column" @drop="onDrop" @dragover.prevent @dragenter.prevent>
             <h2 class="column-title">{{ column.title }}</h2>
             <div class="task-wrapper">
                 <task-card
@@ -57,9 +57,15 @@ Vue.component('kanban-column', {
             this.showForm = false
             this.newTask = { title: '', description: '', deadline: null }
         },
-
-        moveTask(task, newColumnIndex, returnReason) {
-            this.$emit('move-task', task, newColumnIndex, returnReason)
+        onDrop(evt) {
+            const task = JSON.parse(evt.dataTransfer.getData('task'))
+            const oldColumnIndex = evt.dataTransfer.getData('from');
+            if (oldColumnIndex !== '3') {
+                this.$emit('move-task', task, this.columnIndex, null, oldColumnIndex);
+            }
+        },
+        moveTask(...args) {
+            this.$emit('move-task', ...args)
         },
         editTask(task) {
             this.$emit('edit-task', task)
@@ -76,7 +82,9 @@ Vue.component('task-card', {
             'urgent': isUrgent, 
             'overdue': isOverdue(task.deadline) && columnIndex !== 3, 
             'completed': !isOverdue(task.deadline) && columnIndex === 3 }"
-            >
+            draggable
+            @dragstart="startDrag"
+        >
             <div v-if="!isEditing && !isReturningToWork">
                 <p class="task-title">{{ task.title }}</p>
                 <p class="task-description">{{ task.description }}</p>
@@ -87,7 +95,6 @@ Vue.component('task-card', {
                 <div class="btns-wrapper">
                     <button class="task__btn" @click="startEditing" v-if="columnIndex !== 3">Редактировать</button>
                     <button class="task__btn" @click="deleteTask">Удалить</button>
-                    <button class="task__btn" v-if="columnIndex !== 3" @click="moveTask(columnIndex + 1)">Переместить вперед</button>
                     <button class="task__btn" v-if="columnIndex === 2" @click="startReturningToWork">Вернуть в работу</button>
                 </div>
             </div>
@@ -176,8 +183,16 @@ Vue.component('task-card', {
             this.$emit('delete-task', this.task)
         },
         moveTask(newColumnIndex) {
-            this.$emit('move-task', this.task, newColumnIndex)
+            this.$emit('move-task', this.task, newColumnIndex, null, this.columnIndex)
         },
+        startDrag(evt) {
+            if (this.columnIndex !== 3) {
+                evt.dataTransfer.dropEffect = 'move';
+                evt.dataTransfer.effectAllowed = 'move';
+                evt.dataTransfer.setData('task', JSON.stringify(this.task));
+                evt.dataTransfer.setData('from', this.columnIndex);
+            }
+        }
     }
 })
 
@@ -206,8 +221,14 @@ let app = new Vue({
         }
     },
     methods: {
-        moveTask(task, newColumnIndex, returnReason) {
-            const currentColumnIndex = this.columns.findIndex(column => column.tasks.includes(task));
+        moveTask(task, newColumnIndex, returnReason, oldColumnIndex) {
+            if (oldColumnIndex === 3) {
+                return;
+            }
+            if (isFinite(oldColumnIndex) && ((newColumnIndex - oldColumnIndex) > 1)) {
+                return;
+            }
+            const currentColumnIndex = oldColumnIndex ?? this.columns.findIndex(column => column.tasks.includes(task));
             if (currentColumnIndex !== -1) {
                 this.columns[currentColumnIndex].tasks = this.columns[currentColumnIndex].tasks.filter(t => t.id !== task.id);
             }
